@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TELECOM – Analysis History | Hadoop MapReduce Job Log</title>
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="app-layout">
+    <!-- Left Navigation Sidebar (Width: 250px, Height: 100vh) -->
+    <aside class="sidebar" id="appSidebar">
+        <!-- 1. TELECOM Logo at Top -->
+        <div class="sidebar-header d-flex align-items-center justify-content-between">
+            <a href="dashboard.html" style="text-decoration: none; display: flex; align-items: center;">
+                <img src="assets/logo.svg" alt="TELECOM" class="sidebar-logo">
+            </a>
+            <button class="btn btn-sm btn-light border d-md-none" onclick="toggleSidebar()" title="Close menu">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <!-- Vertical Navigation Items (Items 2 to 13) -->
+        <div class="sidebar-nav">
+            <div class="nav-section-title">Navigation Menu</div>
+            <!-- 2. Dashboard -->
+            <a href="dashboard.html" class="nav-item" data-page="dashboard.html">
+                <i class="bi bi-grid-fill"></i>
+                <span>Dashboard</span>
+            </a>
+            <!-- 3. Search Fraud -->
+            <a href="search-fraud.html" class="nav-item" data-page="search-fraud.html">
+                <i class="bi bi-search"></i>
+                <span>Search Fraud</span>
+            </a>
+            <!-- 4. Call Records -->
+            <a href="call-records.html" class="nav-item" data-page="call-records.html">
+                <i class="bi bi-telephone-fill"></i>
+                <span>Call Records</span>
+            </a>
+            <!-- 5. Fraud Detection -->
+            <a href="fraud-detection.html" class="nav-item" data-page="fraud-detection.html">
+                <i class="bi bi-shield-exclamation"></i>
+                <span>Fraud Detection</span>
+            </a>
+            <!-- 6. IP Threats -->
+            <a href="ip-threats.html" class="nav-item" data-page="ip-threats.html">
+                <i class="bi bi-hdd-network-fill"></i>
+                <span>IP Threats</span>
+            </a>
+            <!-- 7. Geo Analysis -->
+            <a href="geo-analysis.html" class="nav-item" data-page="geo-analysis.html">
+                <i class="bi bi-geo-alt-fill"></i>
+                <span>Geo Analysis</span>
+            </a>
+            <!-- 8. AI Clustering -->
+            <a href="ai-clustering.html" class="nav-item" data-page="ai-clustering.html">
+                <i class="bi bi-diagram-3-fill"></i>
+                <span>AI Clustering</span>
+            </a>
+            <!-- 9. Reports -->
+            <a href="reports.html" class="nav-item" data-page="reports.html">
+                <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                <span>Reports</span>
+            </a>
+            <!-- 10. Dataset Management -->
+            <a href="datasets.html" class="nav-item" data-page="datasets.html">
+                <i class="bi bi-database-fill"></i>
+                <span>Dataset Management</span>
+            </a>
+            <!-- 11. Analysis History -->
+            <a href="analysis-history.html" class="nav-item active" data-page="analysis-history.html">
+                <i class="bi bi-clock-history"></i>
+                <span>Analysis History</span>
+            </a>
+            <!-- 12. User Management -->
+            <a href="user-management.html" class="nav-item" data-page="user-management.html">
+                <i class="bi bi-people-fill"></i>
+                <span>User Management</span>
+            </a>
+            <!-- 13. Settings -->
+            <a href="settings.html" class="nav-item" data-page="settings.html">
+                <i class="bi bi-gear-fill"></i>
+                <span>Settings</span>
+            </a>
+        </div>
+
+        <!-- 14. Logout at Bottom -->
+        <div class="sidebar-footer">
+            <a href="javascript:void(0)" onclick="handleLogout()" class="sidebar-logout-btn">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <div class="main-wrapper">
+        <header class="topbar">
+            <div class="topbar-title">
+                <div>
+                    <h1 class="page-heading">Analysis Job History</h1>
+                    <div class="page-subheading">Complete audit history of distributed MapReduce fraud detection runs</div>
+                </div>
+            </div>
+            <div class="topbar-actions">
+                <button class="btn btn-sm btn-outline-primary" onclick="loadJobHistory()">
+                    <i class="bi bi-arrow-clockwise me-1"></i> Refresh History
+                </button>
+            </div>
+        </header>
+
+        <main class="content-body">
+            <!-- Jobs Table Card -->
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title"><i class="bi bi-clock-history text-danger me-2"></i> Executed Hadoop MapReduce Jobs</h3>
+                    <span class="badge bg-light text-dark border" id="jobsCountBadge">Loading...</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive border-0">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Job ID</th>
+                                    <th>Dataset Name</th>
+                                    <th>Start Time</th>
+                                    <th>End Time</th>
+                                    <th>Input Records</th>
+                                    <th>Processed</th>
+                                    <th>Fraud Found</th>
+                                    <th>Duration</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTableBody">
+                                <tr><td colspan="9" class="text-center py-4 text-muted">Loading job records...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        loadJobHistory();
+    });
+
+    async function loadJobHistory() {
+        const res = await api.get('/hadoop/jobs');
+        const tbody = document.getElementById('historyTableBody');
+        if (!tbody) return;
+
+        if (!res || !res.ok || !res.data || res.data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="9" class="text-center py-4 text-muted">No MapReduce jobs executed yet. Trigger a run from Fraud Detection.</td></tr>';
+            return;
+        }
+
+        const jobs = res.data;
+        document.getElementById('jobsCountBadge').textContent = `${jobs.length} Executed Jobs`;
+
+        tbody.innerHTML = jobs.map(j => `
+            <tr>
+                <td class="font-monospace fw-bold text-dark">${j.jobId}</td>
+                <td><span class="badge bg-light text-dark border">${j.datasetName}</span></td>
+                <td class="text-muted small">${j.startTime ? j.startTime.replace('T', ' ') : ''}</td>
+                <td class="text-muted small">${j.endTime ? j.endTime.replace('T', ' ') : '-'}</td>
+                <td>${(j.inputRecords || 0).toLocaleString()}</td>
+                <td>${(j.processedRecords || 0).toLocaleString()}</td>
+                <td><span class="fw-bold text-danger">${j.fraudRecords || 0}</span></td>
+                <td>${j.durationSeconds || 0}s</td>
+                <td>
+                    <span class="badge ${j.status === 'COMPLETED' ? 'bg-success' : (j.status === 'RUNNING' ? 'bg-warning text-dark' : 'bg-danger')}">
+                        ${j.status}
+                    </span>
+                </td>
+            </tr>
+        `).join('');
+    }
+</script>
+</body>
+</html>

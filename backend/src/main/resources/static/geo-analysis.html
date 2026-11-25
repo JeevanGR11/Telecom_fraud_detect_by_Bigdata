@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TELECOM – Geo Analysis | Regional Telecom Analytics</title>
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="app-layout">
+    <!-- Left Navigation Sidebar (Width: 250px, Height: 100vh) -->
+    <aside class="sidebar" id="appSidebar">
+        <!-- 1. TELECOM Logo at Top -->
+        <div class="sidebar-header d-flex align-items-center justify-content-between">
+            <a href="dashboard.html" style="text-decoration: none; display: flex; align-items: center;">
+                <img src="assets/logo.svg" alt="TELECOM" class="sidebar-logo">
+            </a>
+            <button class="btn btn-sm btn-light border d-md-none" onclick="toggleSidebar()" title="Close menu">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <!-- Vertical Navigation Items (Items 2 to 13) -->
+        <div class="sidebar-nav">
+            <div class="nav-section-title">Navigation Menu</div>
+            <!-- 2. Dashboard -->
+            <a href="dashboard.html" class="nav-item" data-page="dashboard.html">
+                <i class="bi bi-grid-fill"></i>
+                <span>Dashboard</span>
+            </a>
+            <!-- 3. Search Fraud -->
+            <a href="search-fraud.html" class="nav-item" data-page="search-fraud.html">
+                <i class="bi bi-search"></i>
+                <span>Search Fraud</span>
+            </a>
+            <!-- 4. Call Records -->
+            <a href="call-records.html" class="nav-item" data-page="call-records.html">
+                <i class="bi bi-telephone-fill"></i>
+                <span>Call Records</span>
+            </a>
+            <!-- 5. Fraud Detection -->
+            <a href="fraud-detection.html" class="nav-item" data-page="fraud-detection.html">
+                <i class="bi bi-shield-exclamation"></i>
+                <span>Fraud Detection</span>
+            </a>
+            <!-- 6. IP Threats -->
+            <a href="ip-threats.html" class="nav-item" data-page="ip-threats.html">
+                <i class="bi bi-hdd-network-fill"></i>
+                <span>IP Threats</span>
+            </a>
+            <!-- 7. Geo Analysis -->
+            <a href="geo-analysis.html" class="nav-item active" data-page="geo-analysis.html">
+                <i class="bi bi-geo-alt-fill"></i>
+                <span>Geo Analysis</span>
+            </a>
+            <!-- 8. AI Clustering -->
+            <a href="ai-clustering.html" class="nav-item" data-page="ai-clustering.html">
+                <i class="bi bi-diagram-3-fill"></i>
+                <span>AI Clustering</span>
+            </a>
+            <!-- 9. Reports -->
+            <a href="reports.html" class="nav-item" data-page="reports.html">
+                <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                <span>Reports</span>
+            </a>
+            <!-- 10. Dataset Management -->
+            <a href="datasets.html" class="nav-item" data-page="datasets.html">
+                <i class="bi bi-database-fill"></i>
+                <span>Dataset Management</span>
+            </a>
+            <!-- 11. Analysis History -->
+            <a href="analysis-history.html" class="nav-item" data-page="analysis-history.html">
+                <i class="bi bi-clock-history"></i>
+                <span>Analysis History</span>
+            </a>
+            <!-- 12. User Management -->
+            <a href="user-management.html" class="nav-item" data-page="user-management.html">
+                <i class="bi bi-people-fill"></i>
+                <span>User Management</span>
+            </a>
+            <!-- 13. Settings -->
+            <a href="settings.html" class="nav-item" data-page="settings.html">
+                <i class="bi bi-gear-fill"></i>
+                <span>Settings</span>
+            </a>
+        </div>
+
+        <!-- 14. Logout at Bottom -->
+        <div class="sidebar-footer">
+            <a href="javascript:void(0)" onclick="handleLogout()" class="sidebar-logout-btn">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <div class="main-wrapper">
+        <header class="topbar">
+            <div class="topbar-title">
+                <div>
+                    <h1 class="page-heading">Geographical Fraud Analytics</h1>
+                    <div class="page-subheading">Regional distribution of Indian CDR calling traffic and suspicious dialing concentrations</div>
+                </div>
+            </div>
+            <div class="topbar-actions">
+                <div class="hadoop-status-pill" id="hadoopStatusPill"></div>
+            </div>
+        </header>
+
+        <main class="content-body">
+            <!-- Regional Summary Cards -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="card p-3">
+                        <small class="text-muted text-uppercase fw-bold">Highest Risk Circle</small>
+                        <h4 class="fw-bold text-danger mt-1" id="highestRiskCircleText">Karnataka</h4>
+                        <small class="text-secondary">Bengaluru Urban Circle (Wangiri)</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card p-3">
+                        <small class="text-muted text-uppercase fw-bold">Active Outbound Blast</small>
+                        <h4 class="fw-bold text-warning mt-1">Delhi NCR</h4>
+                        <small class="text-secondary">High-Rate Robocall Gateway</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card p-3">
+                        <small class="text-muted text-uppercase fw-bold">Monitored Indian Circles</small>
+                        <h4 class="fw-bold text-primary mt-1" id="circlesCountText">14 Circles</h4>
+                        <small class="text-secondary">Tier-1 & Tier-2 Telecom Circles</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card p-3">
+                        <small class="text-muted text-uppercase fw-bold">Normal Telecom Ratio</small>
+                        <h4 class="fw-bold text-success mt-1">93.4%</h4>
+                        <small class="text-secondary">Legitimate Subscriber Traffic</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-8">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="bi bi-bar-chart-fill text-danger me-2"></i> State-wise Call Volume vs. Suspicious Incidents</h3>
+                        </div>
+                        <div class="card-body">
+                            <div style="height: 300px;">
+                                <canvas id="geoStateChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="bi bi-pin-map-fill text-danger me-2"></i> Hotspot Threat Severity</h3>
+                        </div>
+                        <div class="card-body" id="hotspotsContainer">
+                            <div class="text-muted text-center py-4">Loading regional hotspots...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- State-wise Distribution Table -->
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title"><i class="bi bi-geo-alt-fill text-danger me-2"></i> Regional Telecom Circle Breakdown</h3>
+                    <span class="badge bg-light text-dark border">Indian Telecommunications Data</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive border-0">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>State / Circle</th>
+                                    <th>Major Cities Monitored</th>
+                                    <th>Total Calls</th>
+                                    <th>Suspicious Calls</th>
+                                    <th>Max Risk Score</th>
+                                    <th>Threat Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="geoTableBody">
+                                <tr><td colspan="6" class="text-center py-4 text-muted">Loading regional statistics...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+<script>
+    let geoChart = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadGeoAnalytics();
+    });
+
+    async function loadGeoAnalytics() {
+        const res = await api.get('/geo/analytics');
+        if (!res || !res.ok || !res.data) return;
+
+        const data = res.data;
+        document.getElementById('highestRiskCircleText').textContent = data.highestRiskCircle || 'Karnataka';
+        document.getElementById('circlesCountText').textContent = `${data.totalCirclesMonitored || 14} Circles`;
+
+        // Render Hotspots list
+        const hotspotsEl = document.getElementById('hotspotsContainer');
+        if (data.hotspots) {
+            hotspotsEl.innerHTML = data.hotspots.map(h => `
+                <div class="p-3 mb-2 rounded bg-light border">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <strong class="text-dark">${h.circleName}</strong>
+                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle">${h.incidentCount} Flagged</span>
+                    </div>
+                    <div class="small text-secondary mb-1">${h.pattern}</div>
+                    <div class="small font-monospace text-muted"><i class="bi bi-hdd-network me-1"></i>${h.sourceIp}</div>
+                </div>
+            `).join('');
+        }
+
+        // Render Table
+        const tbody = document.getElementById('geoTableBody');
+        if (data.stateDistribution) {
+            tbody.innerHTML = data.stateDistribution.map(s => `
+                <tr>
+                    <td><strong class="text-dark">${s.state}</strong></td>
+                    <td class="text-secondary">${s.cities}</td>
+                    <td><span class="fw-semibold">${s.totalCalls}</span></td>
+                    <td><span class="fw-bold ${s.suspiciousCalls > 10 ? 'text-danger' : 'text-secondary'}">${s.suspiciousCalls}</span></td>
+                    <td>
+                        <span class="fw-bold ${s.maxRiskScore >= 70 ? 'text-danger' : (s.maxRiskScore >= 40 ? 'text-warning' : 'text-success')}">
+                            ${s.maxRiskScore} / 100
+                        </span>
+                    </td>
+                    <td><span class="badge ${getStatusBadge(s.threatStatus)}">${s.threatStatus}</span></td>
+                </tr>
+            `).join('');
+
+            renderGeoChart(data.stateDistribution);
+        }
+    }
+
+    function getStatusBadge(status) {
+        if (!status) return 'bg-light text-dark';
+        if (status.includes('CRITICAL')) return 'bg-danger text-white';
+        if (status.includes('HIGH')) return 'bg-warning text-dark';
+        if (status.includes('MEDIUM')) return 'bg-info text-white';
+        return 'bg-success text-white';
+    }
+
+    function renderGeoChart(states) {
+        const ctx = document.getElementById('geoStateChart').getContext('2d');
+        const labels = states.map(s => s.state);
+        const calls = states.map(s => s.totalCalls);
+        const suspicious = states.map(s => s.suspiciousCalls);
+
+        if (geoChart) geoChart.destroy();
+
+        geoChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: 'Total Calls',
+                        data: calls,
+                        backgroundColor: '#CBD5E1',
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Suspicious Calls',
+                        data: suspicious,
+                        backgroundColor: '#E63946',
+                        borderRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top', labels: { boxWidth: 12 } }
+                },
+                scales: {
+                    x: { grid: { display: false } },
+                    y: { beginAtZero: true, grid: { color: '#F1F5F9' } }
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

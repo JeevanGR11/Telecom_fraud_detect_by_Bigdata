@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TELECOM – Reports | Telecommunication Fraud Audit &amp; Reporting</title>
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="app-layout">
+    <!-- Left Navigation Sidebar (Width: 250px, Height: 100vh) -->
+    <aside class="sidebar" id="appSidebar">
+        <!-- 1. TELECOM Logo at Top -->
+        <div class="sidebar-header d-flex align-items-center justify-content-between">
+            <a href="dashboard.html" style="text-decoration: none; display: flex; align-items: center;">
+                <img src="assets/logo.svg" alt="TELECOM" class="sidebar-logo">
+            </a>
+            <button class="btn btn-sm btn-light border d-md-none" onclick="toggleSidebar()" title="Close menu">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <!-- Vertical Navigation Items (Items 2 to 13) -->
+        <div class="sidebar-nav">
+            <div class="nav-section-title">Navigation Menu</div>
+            <!-- 2. Dashboard -->
+            <a href="dashboard.html" class="nav-item" data-page="dashboard.html">
+                <i class="bi bi-grid-fill"></i>
+                <span>Dashboard</span>
+            </a>
+            <!-- 3. Search Fraud -->
+            <a href="search-fraud.html" class="nav-item" data-page="search-fraud.html">
+                <i class="bi bi-search"></i>
+                <span>Search Fraud</span>
+            </a>
+            <!-- 4. Call Records -->
+            <a href="call-records.html" class="nav-item" data-page="call-records.html">
+                <i class="bi bi-telephone-fill"></i>
+                <span>Call Records</span>
+            </a>
+            <!-- 5. Fraud Detection -->
+            <a href="fraud-detection.html" class="nav-item" data-page="fraud-detection.html">
+                <i class="bi bi-shield-exclamation"></i>
+                <span>Fraud Detection</span>
+            </a>
+            <!-- 6. IP Threats -->
+            <a href="ip-threats.html" class="nav-item" data-page="ip-threats.html">
+                <i class="bi bi-hdd-network-fill"></i>
+                <span>IP Threats</span>
+            </a>
+            <!-- 7. Geo Analysis -->
+            <a href="geo-analysis.html" class="nav-item" data-page="geo-analysis.html">
+                <i class="bi bi-geo-alt-fill"></i>
+                <span>Geo Analysis</span>
+            </a>
+            <!-- 8. AI Clustering -->
+            <a href="ai-clustering.html" class="nav-item" data-page="ai-clustering.html">
+                <i class="bi bi-diagram-3-fill"></i>
+                <span>AI Clustering</span>
+            </a>
+            <!-- 9. Reports -->
+            <a href="reports.html" class="nav-item active" data-page="reports.html">
+                <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                <span>Reports</span>
+            </a>
+            <!-- 10. Dataset Management -->
+            <a href="datasets.html" class="nav-item" data-page="datasets.html">
+                <i class="bi bi-database-fill"></i>
+                <span>Dataset Management</span>
+            </a>
+            <!-- 11. Analysis History -->
+            <a href="analysis-history.html" class="nav-item" data-page="analysis-history.html">
+                <i class="bi bi-clock-history"></i>
+                <span>Analysis History</span>
+            </a>
+            <!-- 12. User Management -->
+            <a href="user-management.html" class="nav-item" data-page="user-management.html">
+                <i class="bi bi-people-fill"></i>
+                <span>User Management</span>
+            </a>
+            <!-- 13. Settings -->
+            <a href="settings.html" class="nav-item" data-page="settings.html">
+                <i class="bi bi-gear-fill"></i>
+                <span>Settings</span>
+            </a>
+        </div>
+
+        <!-- 14. Logout at Bottom -->
+        <div class="sidebar-footer">
+            <a href="javascript:void(0)" onclick="handleLogout()" class="sidebar-logout-btn">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <div class="main-wrapper">
+        <header class="topbar">
+            <div class="topbar-title">
+                <div>
+                    <h1 class="page-heading">Fraud Analysis Reports</h1>
+                    <div class="page-subheading">Generate and export official telecommunication fraud audit documentation</div>
+                </div>
+            </div>
+            <div class="topbar-actions">
+                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#generateReportModal">
+                    <i class="bi bi-file-earmark-plus me-1"></i> Generate New Report
+                </button>
+            </div>
+        </header>
+
+        <main class="content-body">
+            <!-- Historical Reports Table Card -->
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title"><i class="bi bi-file-earmark-text-fill text-danger me-2"></i> Generated Audit Reports</h3>
+                    <span class="badge bg-light text-dark border" id="reportsCountBadge">Loading...</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive border-0">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Report Title</th>
+                                    <th>Type</th>
+                                    <th>Analyzed Records</th>
+                                    <th>Fraud Cases</th>
+                                    <th>High Risk</th>
+                                    <th>Generated By</th>
+                                    <th>Created Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportsTableBody">
+                                <tr><td colspan="8" class="text-center py-4 text-muted">Loading generated reports...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Printable Live Report Preview -->
+            <div class="card" id="printableReportSection">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
+                    <div>
+                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle me-2">Live Audit</span>
+                        <h3 class="card-title d-inline-block fs-5">Active Telecom Fraud Executive Summary</h3>
+                    </div>
+                    <button class="btn btn-sm btn-outline-dark" onclick="window.print()">
+                        <i class="bi bi-printer me-1"></i> Print / Save as PDF
+                    </button>
+                </div>
+                <div class="card-body p-4" id="printableContent">
+                    <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+                        <img src="assets/logo.svg" alt="TELECOM" style="height: 44px;">
+                        <div class="text-end">
+                            <h6 class="mb-0 fw-bold">TELECOM FRAUD INVESTIGATION BUREAU</h6>
+                            <small class="text-muted">BDT Academic Big Data Technology Evaluation</small>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-3 p-3 bg-light rounded border text-center">
+                            <small class="text-muted text-uppercase fw-bold">Records Analyzed</small>
+                            <h4 class="fw-bold mt-1 text-dark" id="repAnalyzedCount">1,000</h4>
+                        </div>
+                        <div class="col-md-3 p-3 bg-light rounded border text-center">
+                            <small class="text-muted text-uppercase fw-bold">Fraud Cases</small>
+                            <h4 class="fw-bold mt-1 text-danger" id="repFraudCount">3</h4>
+                        </div>
+                        <div class="col-md-3 p-3 bg-light rounded border text-center">
+                            <small class="text-muted text-uppercase fw-bold">High Risk Entities</small>
+                            <h4 class="fw-bold mt-1 text-danger" id="repHighCount">2</h4>
+                        </div>
+                        <div class="col-md-3 p-3 bg-light rounded border text-center">
+                            <small class="text-muted text-uppercase fw-bold">Medium Risk Entities</small>
+                            <h4 class="fw-bold mt-1 text-warning" id="repMedCount">1</h4>
+                        </div>
+                    </div>
+
+                    <h5 class="fw-bold text-dark mb-3" style="font-size: 15px;">Suspicious Mobile Numbers Under Flag:</h5>
+                    <div class="table-responsive border mb-4">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Mobile Number</th>
+                                    <th>Calls</th>
+                                    <th>Distinct Targets</th>
+                                    <th>Risk Score</th>
+                                    <th>Risk Level</th>
+                                    <th>Primary Indicator</th>
+                                </tr>
+                            </thead>
+                            <tbody id="repSuspectsBody">
+                                <tr><td colspan="6" class="text-center py-2 text-muted">Loading current suspects...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="p-3 rounded bg-light border" style="font-size: 12px; color: var(--text-secondary);">
+                        <strong>Audit Disclaimer:</strong> This official investigation report has been generated using distributed Apache Hadoop MapReduce analytics. Calling statistics and entropy indicators reflect heuristic pattern recognition, designed to assist telecommunications operators and cybersecurity engineers in mitigating toll leakage and Wangiri Ping-call fraud.
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Modal: Generate Report -->
+<div class="modal fade" id="generateReportModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title font-weight-bold">Generate Audit Report</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form onsubmit="handleGenerateReport(event)">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Report Title</label>
+                        <input type="text" class="form-control" id="modalRepTitle" placeholder="e.g. November 2026 Telecom Fraud Audit" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Report Scope</label>
+                        <select class="form-select" id="modalRepType">
+                            <option value="FULL_FRAUD_AUDIT">Full Telecommunications Fraud Audit</option>
+                            <option value="HIGH_RISK_ONLY">High-Risk Entities Only</option>
+                            <option value="WANGIRI_AUDIT">Wangiri & Ping-Call Anomaly Report</option>
+                            <option value="EXECUTIVE_SUMMARY">Executive Dashboard Summary</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer border-top">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Generate &amp; Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        loadReportsList();
+        loadPrintableAudit();
+    });
+
+    async function loadReportsList() {
+        const res = await api.get('/reports');
+        const tbody = document.getElementById('reportsTableBody');
+        if (!tbody) return;
+
+        if (!res || !res.ok || !res.data || res.data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-muted">No historical reports generated. Click "Generate New Report" above.</td></tr>';
+            return;
+        }
+
+        document.getElementById('reportsCountBadge').textContent = `${res.data.length} Reports`;
+        tbody.innerHTML = res.data.map(r => `
+            <tr>
+                <td><strong>${r.title}</strong></td>
+                <td><span class="badge bg-light text-dark border">${r.reportType}</span></td>
+                <td>${r.recordsAnalyzed}</td>
+                <td><span class="fw-bold text-danger">${r.fraudCasesFound}</span></td>
+                <td><span class="fw-bold text-danger">${r.highRiskCount}</span></td>
+                <td>${r.generatedBy}</td>
+                <td class="text-muted small">${r.createdAt ? r.createdAt.replace('T', ' ') : ''}</td>
+                <td>
+                    <a href="/api/reports/${r.id}/download" class="btn btn-sm btn-outline-danger py-1 px-2" style="font-size: 11px;">
+                        <i class="bi bi-download me-1"></i> CSV
+                    </a>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    async function loadPrintableAudit() {
+        const res = await api.get('/dashboard/stats');
+        if (res && res.ok && res.data) {
+            document.getElementById('repAnalyzedCount').textContent = res.data.analyzedCalls.toLocaleString();
+            document.getElementById('repFraudCount').textContent = res.data.fraudDetected.toLocaleString();
+        }
+
+        const alertsRes = await api.get('/dashboard/recent-alerts');
+        const tbody = document.getElementById('repSuspectsBody');
+        if (alertsRes && alertsRes.ok && alertsRes.data && tbody) {
+            tbody.innerHTML = alertsRes.data.map(a => `
+                <tr>
+                    <td><span class="phone-pill">+91 ${a.mobileNumber}</span></td>
+                    <td>${a.totalCalls}</td>
+                    <td>${a.distinctReceivers || 'N/A'}</td>
+                    <td><span class="fw-bold ${a.riskScore >= 70 ? 'text-danger' : 'text-warning'}">${a.riskScore}</span></td>
+                    <td><span class="${a.riskLevel.includes('HIGH') ? 'badge-high' : 'badge-medium'}">${a.riskLevel}</span></td>
+                    <td class="text-secondary small">${a.reasons || 'Pattern Anomaly'}</td>
+                </tr>
+            `).join('');
+        }
+    }
+
+    async function handleGenerateReport(e) {
+        e.preventDefault();
+        const title = document.getElementById('modalRepTitle').value.trim();
+        const reportType = document.getElementById('modalRepType').value;
+
+        const res = await api.post('/reports/generate', { title, reportType });
+        if (res && res.ok && res.data) {
+            showToast('Report generated successfully!', 'success');
+            const modalEl = document.getElementById('generateReportModal');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            if (modal) modal.hide();
+            loadReportsList();
+        } else {
+            showToast('Failed to generate report', 'error');
+        }
+    }
+</script>
+</body>
+</html>

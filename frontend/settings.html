@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TELECOM – Settings | Platform Configuration</title>
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="app-layout">
+    <!-- Left Navigation Sidebar (Width: 250px, Height: 100vh) -->
+    <aside class="sidebar" id="appSidebar">
+        <!-- 1. TELECOM Logo at Top -->
+        <div class="sidebar-header d-flex align-items-center justify-content-between">
+            <a href="dashboard.html" style="text-decoration: none; display: flex; align-items: center;">
+                <img src="assets/logo.svg" alt="TELECOM" class="sidebar-logo">
+            </a>
+            <button class="btn btn-sm btn-light border d-md-none" onclick="toggleSidebar()" title="Close menu">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <!-- Vertical Navigation Items (Items 2 to 13) -->
+        <div class="sidebar-nav">
+            <div class="nav-section-title">Navigation Menu</div>
+            <!-- 2. Dashboard -->
+            <a href="dashboard.html" class="nav-item" data-page="dashboard.html">
+                <i class="bi bi-grid-fill"></i>
+                <span>Dashboard</span>
+            </a>
+            <!-- 3. Search Fraud -->
+            <a href="search-fraud.html" class="nav-item" data-page="search-fraud.html">
+                <i class="bi bi-search"></i>
+                <span>Search Fraud</span>
+            </a>
+            <!-- 4. Call Records -->
+            <a href="call-records.html" class="nav-item" data-page="call-records.html">
+                <i class="bi bi-telephone-fill"></i>
+                <span>Call Records</span>
+            </a>
+            <!-- 5. Fraud Detection -->
+            <a href="fraud-detection.html" class="nav-item" data-page="fraud-detection.html">
+                <i class="bi bi-shield-exclamation"></i>
+                <span>Fraud Detection</span>
+            </a>
+            <!-- 6. IP Threats -->
+            <a href="ip-threats.html" class="nav-item" data-page="ip-threats.html">
+                <i class="bi bi-hdd-network-fill"></i>
+                <span>IP Threats</span>
+            </a>
+            <!-- 7. Geo Analysis -->
+            <a href="geo-analysis.html" class="nav-item" data-page="geo-analysis.html">
+                <i class="bi bi-geo-alt-fill"></i>
+                <span>Geo Analysis</span>
+            </a>
+            <!-- 8. AI Clustering -->
+            <a href="ai-clustering.html" class="nav-item" data-page="ai-clustering.html">
+                <i class="bi bi-diagram-3-fill"></i>
+                <span>AI Clustering</span>
+            </a>
+            <!-- 9. Reports -->
+            <a href="reports.html" class="nav-item" data-page="reports.html">
+                <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                <span>Reports</span>
+            </a>
+            <!-- 10. Dataset Management -->
+            <a href="datasets.html" class="nav-item" data-page="datasets.html">
+                <i class="bi bi-database-fill"></i>
+                <span>Dataset Management</span>
+            </a>
+            <!-- 11. Analysis History -->
+            <a href="analysis-history.html" class="nav-item" data-page="analysis-history.html">
+                <i class="bi bi-clock-history"></i>
+                <span>Analysis History</span>
+            </a>
+            <!-- 12. User Management -->
+            <a href="user-management.html" class="nav-item" data-page="user-management.html">
+                <i class="bi bi-people-fill"></i>
+                <span>User Management</span>
+            </a>
+            <!-- 13. Settings -->
+            <a href="settings.html" class="nav-item active" data-page="settings.html">
+                <i class="bi bi-gear-fill"></i>
+                <span>Settings</span>
+            </a>
+        </div>
+
+        <!-- 14. Logout at Bottom -->
+        <div class="sidebar-footer">
+            <a href="javascript:void(0)" onclick="handleLogout()" class="sidebar-logout-btn">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <div class="main-wrapper">
+        <header class="topbar">
+            <div class="topbar-title">
+                <div>
+                    <h1 class="page-heading">Platform Settings</h1>
+                    <div class="page-subheading">Manage fraud detection thresholds, Hadoop cluster settings, and account security</div>
+                </div>
+            </div>
+            <div class="topbar-actions">
+                <div class="hadoop-status-pill" id="hadoopStatusPill"></div>
+            </div>
+        </header>
+
+        <main class="content-body">
+            <div class="row g-4">
+                <!-- Left Column: Fraud Detection Thresholds -->
+                <div class="col-lg-6">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="bi bi-sliders text-danger me-2"></i> Fraud Detection Heuristic Thresholds</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="thresholdForm" onsubmit="handleSaveThresholds(event)">
+                                <div class="mb-3">
+                                    <label class="form-label">Calling Frequency Alert Threshold</label>
+                                    <input type="number" class="form-control" id="cfgFreq" min="1" max="100" required>
+                                    <small class="text-muted">Minimum number of calls made by a single subscriber to trigger high volume alerts.</small>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Distinct Receivers Entropy Threshold</label>
+                                    <input type="number" class="form-control" id="cfgDistinct" min="1" max="100" required>
+                                    <small class="text-muted">Distinct contact count before triggering automated robocall blast alerts.</small>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Wangiri Ping-Call Max Avg Duration (seconds)</label>
+                                    <input type="number" class="form-control" id="cfgWangiri" min="1" max="30" required>
+                                    <small class="text-muted">Calls under this average duration indicate missed-call callback lure scams.</small>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Excessive Duration Threshold (seconds)</label>
+                                    <input type="number" class="form-control" id="cfgDuration" min="60" max="86400" required>
+                                    <small class="text-muted">Total accumulated call time threshold before flagging toll bypass / conference leakage.</small>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Night Calling Ratio (0.00 – 1.00)</label>
+                                    <input type="number" step="0.01" class="form-control" id="cfgNight" min="0.0" max="1.0" required>
+                                    <small class="text-muted">Ratio of calls occurring between 00:00 and 04:59 AM to trigger off-peak alerts.</small>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle me-1"></i> Save Detection Thresholds
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Security & Infrastructure -->
+                <div class="col-lg-6">
+                    <!-- Password Update Card -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="bi bi-shield-lock text-danger me-2"></i> Account Security &amp; Password</h3>
+                        </div>
+                        <div class="card-body">
+                            <form onsubmit="handleChangePassword(event)">
+                                <div class="mb-3">
+                                    <label class="form-label">Current Password</label>
+                                    <input type="password" class="form-control" id="currentPassInput" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">New Password</label>
+                                    <input type="password" class="form-control" id="newPassInput" minlength="6" required>
+                                </div>
+                                <button type="submit" class="btn btn-outline-danger">
+                                    Update Password
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Infrastructure Information -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="bi bi-hdd-stack text-danger me-2"></i> Big Data Infrastructure</h3>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-sm border-0 mb-0">
+                                <tbody>
+                                    <tr>
+                                        <td class="text-muted">RDBMS:</td>
+                                        <td><strong>MySQL 8.0+ / Spring Data JPA</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Database Name:</td>
+                                        <td class="font-monospace">telecom</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Distributed Framework:</td>
+                                        <td><strong>Apache Hadoop 3.3.6</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Default HDFS Target:</td>
+                                        <td class="font-monospace">/telecom/cdr/input</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Application Base Package:</td>
+                                        <td class="font-monospace">com.telecom</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        loadSettings();
+    });
+
+    async function loadSettings() {
+        const res = await api.get('/settings');
+        if (!res || !res.ok || !res.data) return;
+
+        const s = res.data;
+        document.getElementById('cfgFreq').value = s['fraud.threshold.frequency'] || 8;
+        document.getElementById('cfgDistinct').value = s['fraud.threshold.distinct.receivers'] || 6;
+        document.getElementById('cfgWangiri').value = s['fraud.threshold.wangiri.avg.duration'] || 5;
+        document.getElementById('cfgDuration').value = s['fraud.threshold.excessive.duration'] || 3600;
+        document.getElementById('cfgNight').value = s['fraud.threshold.night.ratio'] || 0.35;
+    }
+
+    async function handleSaveThresholds(e) {
+        e.preventDefault();
+        const updates = {
+            'fraud.threshold.frequency': document.getElementById('cfgFreq').value,
+            'fraud.threshold.distinct.receivers': document.getElementById('cfgDistinct').value,
+            'fraud.threshold.wangiri.avg.duration': document.getElementById('cfgWangiri').value,
+            'fraud.threshold.excessive.duration': document.getElementById('cfgDuration').value,
+            'fraud.threshold.night.ratio': document.getElementById('cfgNight').value
+        };
+
+        const res = await api.put('/settings', updates);
+        if (res && res.ok) {
+            showToast('Threshold settings updated and synced with Reducer configuration!', 'success');
+        } else {
+            showToast('Failed to save settings', 'error');
+        }
+    }
+
+    async function handleChangePassword(e) {
+        e.preventDefault();
+        const currentPassword = document.getElementById('currentPassInput').value;
+        const newPassword = document.getElementById('newPassInput').value;
+
+        const res = await api.post('/settings/password', { currentPassword, newPassword });
+        if (res && res.ok && res.data && res.data.success) {
+            showToast('Password updated securely!', 'success');
+            document.getElementById('currentPassInput').value = '';
+            document.getElementById('newPassInput').value = '';
+        } else {
+            showToast((res && res.data && res.data.error) || 'Failed to update password. Verify current password.', 'error');
+        }
+    }
+</script>
+</body>
+</html>

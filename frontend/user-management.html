@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TELECOM – User Management | Role-Based Access Control</title>
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="app-layout">
+    <!-- Left Navigation Sidebar (Width: 250px, Height: 100vh) -->
+    <aside class="sidebar" id="appSidebar">
+        <!-- 1. TELECOM Logo at Top -->
+        <div class="sidebar-header d-flex align-items-center justify-content-between">
+            <a href="dashboard.html" style="text-decoration: none; display: flex; align-items: center;">
+                <img src="assets/logo.svg" alt="TELECOM" class="sidebar-logo">
+            </a>
+            <button class="btn btn-sm btn-light border d-md-none" onclick="toggleSidebar()" title="Close menu">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <!-- Vertical Navigation Items (Items 2 to 13) -->
+        <div class="sidebar-nav">
+            <div class="nav-section-title">Navigation Menu</div>
+            <!-- 2. Dashboard -->
+            <a href="dashboard.html" class="nav-item" data-page="dashboard.html">
+                <i class="bi bi-grid-fill"></i>
+                <span>Dashboard</span>
+            </a>
+            <!-- 3. Search Fraud -->
+            <a href="search-fraud.html" class="nav-item" data-page="search-fraud.html">
+                <i class="bi bi-search"></i>
+                <span>Search Fraud</span>
+            </a>
+            <!-- 4. Call Records -->
+            <a href="call-records.html" class="nav-item" data-page="call-records.html">
+                <i class="bi bi-telephone-fill"></i>
+                <span>Call Records</span>
+            </a>
+            <!-- 5. Fraud Detection -->
+            <a href="fraud-detection.html" class="nav-item" data-page="fraud-detection.html">
+                <i class="bi bi-shield-exclamation"></i>
+                <span>Fraud Detection</span>
+            </a>
+            <!-- 6. IP Threats -->
+            <a href="ip-threats.html" class="nav-item" data-page="ip-threats.html">
+                <i class="bi bi-hdd-network-fill"></i>
+                <span>IP Threats</span>
+            </a>
+            <!-- 7. Geo Analysis -->
+            <a href="geo-analysis.html" class="nav-item" data-page="geo-analysis.html">
+                <i class="bi bi-geo-alt-fill"></i>
+                <span>Geo Analysis</span>
+            </a>
+            <!-- 8. AI Clustering -->
+            <a href="ai-clustering.html" class="nav-item" data-page="ai-clustering.html">
+                <i class="bi bi-diagram-3-fill"></i>
+                <span>AI Clustering</span>
+            </a>
+            <!-- 9. Reports -->
+            <a href="reports.html" class="nav-item" data-page="reports.html">
+                <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                <span>Reports</span>
+            </a>
+            <!-- 10. Dataset Management -->
+            <a href="datasets.html" class="nav-item" data-page="datasets.html">
+                <i class="bi bi-database-fill"></i>
+                <span>Dataset Management</span>
+            </a>
+            <!-- 11. Analysis History -->
+            <a href="analysis-history.html" class="nav-item" data-page="analysis-history.html">
+                <i class="bi bi-clock-history"></i>
+                <span>Analysis History</span>
+            </a>
+            <!-- 12. User Management -->
+            <a href="user-management.html" class="nav-item active" data-page="user-management.html">
+                <i class="bi bi-people-fill"></i>
+                <span>User Management</span>
+            </a>
+            <!-- 13. Settings -->
+            <a href="settings.html" class="nav-item" data-page="settings.html">
+                <i class="bi bi-gear-fill"></i>
+                <span>Settings</span>
+            </a>
+        </div>
+
+        <!-- 14. Logout at Bottom -->
+        <div class="sidebar-footer">
+            <a href="javascript:void(0)" onclick="handleLogout()" class="sidebar-logout-btn">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <div class="main-wrapper">
+        <header class="topbar">
+            <div class="topbar-title">
+                <div>
+                    <h1 class="page-heading">User Management (RBAC)</h1>
+                    <div class="page-subheading">Manage administrator and investigator user accounts and access privileges</div>
+                </div>
+            </div>
+            <div class="topbar-actions">
+                <button class="btn btn-sm btn-outline-primary" onclick="loadUsers()">
+                    <i class="bi bi-arrow-clockwise me-1"></i> Refresh Users
+                </button>
+            </div>
+        </header>
+
+        <main class="content-body">
+            <!-- Search & Filters -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-text bg-white text-muted"><i class="bi bi-search"></i></span>
+                                <input type="text" class="form-control" id="userSearchInput" placeholder="Search by name, username, or email..." oninput="filterUserTable()">
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-md-end text-muted small">
+                            <i class="bi bi-shield-lock me-1 text-danger"></i> Role updates are synchronized to MySQL in real-time.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Table Card -->
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title"><i class="bi bi-people-fill text-danger me-2"></i> Registered Accounts</h3>
+                    <span class="badge bg-light text-dark border" id="usersCountBadge">Loading...</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive border-0">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Username</th>
+                                    <th>Email Address</th>
+                                    <th>Assigned Role</th>
+                                    <th>Status</th>
+                                    <th>Modify Role</th>
+                                    <th>Account Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <tr><td colspan="7" class="text-center py-4 text-muted">Loading user accounts...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+<script>
+    let allUsers = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const u = api.getUser();
+        if (u && u.role !== 'ADMIN') {
+            alert('Access restricted to administrators.');
+            window.location.href = 'dashboard.html';
+            return;
+        }
+        loadUsers();
+    });
+
+    async function loadUsers() {
+        const res = await api.get('/users');
+        const tbody = document.getElementById('usersTableBody');
+        if (!tbody) return;
+
+        if (!res || !res.ok || !res.data) {
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-danger">Failed to load users.</td></tr>';
+            return;
+        }
+
+        allUsers = res.data;
+        document.getElementById('usersCountBadge').textContent = `${allUsers.length} Users`;
+        renderUserTable(allUsers);
+    }
+
+    function renderUserTable(users) {
+        const tbody = document.getElementById('usersTableBody');
+        if (!users || users.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-muted">No users found.</td></tr>';
+            return;
+        }
+
+        const currentUser = api.getUser();
+
+        tbody.innerHTML = users.map(u => {
+            const isSelf = currentUser && currentUser.id === u.id;
+            return `
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="user-avatar" style="width: 32px; height: 32px; font-size: 13px;">${(u.fullName || u.username).charAt(0).toUpperCase()}</div>
+                            <strong>${u.fullName}</strong>
+                        </div>
+                    </td>
+                    <td class="font-monospace text-secondary">${u.username}</td>
+                    <td>${u.email}</td>
+                    <td>
+                        <span class="badge ${u.role === 'ADMIN' ? 'bg-danger-subtle text-danger border border-danger-subtle' : 'bg-success-subtle text-success border border-success-subtle'}">
+                            ${u.role}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge ${u.status === 'ACTIVE' ? 'bg-success' : 'bg-secondary'}">
+                            ${u.status}
+                        </span>
+                    </td>
+                    <td>
+                        <select class="form-select form-select-sm" style="width: 110px;" onchange="updateRole(${u.id}, this.value)" ${isSelf ? 'disabled' : ''}>
+                            <option value="USER" ${u.role === 'USER' ? 'selected' : ''}>USER</option>
+                            <option value="ADMIN" ${u.role === 'ADMIN' ? 'selected' : ''}>ADMIN</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm ${u.status === 'ACTIVE' ? 'btn-outline-danger' : 'btn-outline-success'} py-1 px-2"
+                                style="font-size: 11.5px;"
+                                onclick="toggleStatus(${u.id}, '${u.status}')"
+                                ${isSelf ? 'disabled' : ''}>
+                            ${u.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    function filterUserTable() {
+        const q = document.getElementById('userSearchInput').value.toLowerCase();
+        const filtered = allUsers.filter(u =>
+            (u.fullName && u.fullName.toLowerCase().includes(q)) ||
+            (u.username && u.username.toLowerCase().includes(q)) ||
+            (u.email && u.email.toLowerCase().includes(q))
+        );
+        renderUserTable(filtered);
+    }
+
+    async function updateRole(userId, newRole) {
+        const res = await api.put(`/users/${userId}/role`, { role: newRole });
+        if (res && res.ok) {
+            showToast(`User role updated to ${newRole}`, 'success');
+            loadUsers();
+        } else {
+            showToast('Failed to update role', 'error');
+        }
+    }
+
+    async function toggleStatus(userId, currentStatus) {
+        const newStatus = currentStatus === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
+        if (!confirm(`Are you sure you want to mark this account as ${newStatus}?`)) return;
+
+        const res = await api.put(`/users/${userId}/status`, { status: newStatus });
+        if (res && res.ok) {
+            showToast(`Account status changed to ${newStatus}`, 'success');
+            loadUsers();
+        } else {
+            showToast('Failed to update account status', 'error');
+        }
+    }
+</script>
+</body>
+</html>

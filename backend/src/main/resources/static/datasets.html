@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TELECOM – Datasets | HDFS &amp; CDR Dataset Management</title>
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="app-layout">
+    <!-- Left Navigation Sidebar (Width: 250px, Height: 100vh) -->
+    <aside class="sidebar" id="appSidebar">
+        <!-- 1. TELECOM Logo at Top -->
+        <div class="sidebar-header d-flex align-items-center justify-content-between">
+            <a href="dashboard.html" style="text-decoration: none; display: flex; align-items: center;">
+                <img src="assets/logo.svg" alt="TELECOM" class="sidebar-logo">
+            </a>
+            <button class="btn btn-sm btn-light border d-md-none" onclick="toggleSidebar()" title="Close menu">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <!-- Vertical Navigation Items (Items 2 to 13) -->
+        <div class="sidebar-nav">
+            <div class="nav-section-title">Navigation Menu</div>
+            <!-- 2. Dashboard -->
+            <a href="dashboard.html" class="nav-item" data-page="dashboard.html">
+                <i class="bi bi-grid-fill"></i>
+                <span>Dashboard</span>
+            </a>
+            <!-- 3. Search Fraud -->
+            <a href="search-fraud.html" class="nav-item" data-page="search-fraud.html">
+                <i class="bi bi-search"></i>
+                <span>Search Fraud</span>
+            </a>
+            <!-- 4. Call Records -->
+            <a href="call-records.html" class="nav-item" data-page="call-records.html">
+                <i class="bi bi-telephone-fill"></i>
+                <span>Call Records</span>
+            </a>
+            <!-- 5. Fraud Detection -->
+            <a href="fraud-detection.html" class="nav-item" data-page="fraud-detection.html">
+                <i class="bi bi-shield-exclamation"></i>
+                <span>Fraud Detection</span>
+            </a>
+            <!-- 6. IP Threats -->
+            <a href="ip-threats.html" class="nav-item" data-page="ip-threats.html">
+                <i class="bi bi-hdd-network-fill"></i>
+                <span>IP Threats</span>
+            </a>
+            <!-- 7. Geo Analysis -->
+            <a href="geo-analysis.html" class="nav-item" data-page="geo-analysis.html">
+                <i class="bi bi-geo-alt-fill"></i>
+                <span>Geo Analysis</span>
+            </a>
+            <!-- 8. AI Clustering -->
+            <a href="ai-clustering.html" class="nav-item" data-page="ai-clustering.html">
+                <i class="bi bi-diagram-3-fill"></i>
+                <span>AI Clustering</span>
+            </a>
+            <!-- 9. Reports -->
+            <a href="reports.html" class="nav-item" data-page="reports.html">
+                <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                <span>Reports</span>
+            </a>
+            <!-- 10. Dataset Management -->
+            <a href="datasets.html" class="nav-item active" data-page="datasets.html">
+                <i class="bi bi-database-fill"></i>
+                <span>Dataset Management</span>
+            </a>
+            <!-- 11. Analysis History -->
+            <a href="analysis-history.html" class="nav-item" data-page="analysis-history.html">
+                <i class="bi bi-clock-history"></i>
+                <span>Analysis History</span>
+            </a>
+            <!-- 12. User Management -->
+            <a href="user-management.html" class="nav-item" data-page="user-management.html">
+                <i class="bi bi-people-fill"></i>
+                <span>User Management</span>
+            </a>
+            <!-- 13. Settings -->
+            <a href="settings.html" class="nav-item" data-page="settings.html">
+                <i class="bi bi-gear-fill"></i>
+                <span>Settings</span>
+            </a>
+        </div>
+
+        <!-- 14. Logout at Bottom -->
+        <div class="sidebar-footer">
+            <a href="javascript:void(0)" onclick="handleLogout()" class="sidebar-logout-btn">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <div class="main-wrapper">
+        <header class="topbar">
+            <div class="topbar-title">
+                <div>
+                    <h1 class="page-heading">Dataset Management</h1>
+                    <div class="page-subheading">Upload, preview, validate, and manage CDR datasets for Hadoop HDFS ingestion</div>
+                </div>
+            </div>
+            <div class="topbar-actions">
+                <a href="/api/datasets/sample/download" class="btn btn-sm btn-outline-primary" download>
+                    <i class="bi bi-download me-1"></i> Download Sample CSV
+                </a>
+            </div>
+        </header>
+
+        <main class="content-body">
+            <!-- Upload & Generator Row -->
+            <div class="row g-4 mb-4">
+                <!-- Upload Box -->
+                <div class="col-lg-6">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="bi bi-cloud-arrow-up-fill text-danger me-2"></i> Upload CDR Dataset</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="uploadForm" onsubmit="handleUploadSubmit(event)">
+                                <div class="mb-3">
+                                    <label class="form-label">Dataset Name</label>
+                                    <input type="text" class="form-control" id="uploadDatasetName" placeholder="e.g. Karnataka-Circle-Nov2026" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Select CSV File</label>
+                                    <input type="file" class="form-control" id="uploadFileInput" accept=".csv" required>
+                                    <small class="text-muted">Expected columns: <code>record_id,caller_number,receiver_number,duration,call_type,call_timestamp,...</code></small>
+                                </div>
+                                <button type="submit" id="uploadBtn" class="btn btn-primary">
+                                    <i class="bi bi-upload me-1"></i> Ingest &amp; Validate CSV
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Synthetic Indian CDR Generator Box -->
+                <div class="col-lg-6">
+                    <div class="card h-100 border-primary">
+                        <div class="card-header bg-white">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h3 class="card-title text-primary"><i class="bi bi-cpu-fill text-danger me-2"></i> Synthetic Indian CDR Generator</h3>
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Configurable Engine</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-secondary small mb-3">
+                                Generates synthetic Indian CDR records strictly following Indian mobile standards (10 digits starting with 6, 7, 8, or 9) and realistic locations (Bengaluru, Mumbai, Delhi, Hyderabad, Chennai, Pune, Kolkata, Ahmedabad).
+                            </p>
+                            <form onsubmit="handleGenerateSubmit(event)">
+                                <div class="mb-3">
+                                    <label class="form-label">Target Dataset Volume</label>
+                                    <select class="form-select" id="genCountSelect">
+                                        <option value="1000">1,000 Records (Initial Functional Verification)</option>
+                                        <option value="10000">10,000 Records (Recommended Standard Evaluation)</option>
+                                        <option value="100000">100,000 Records (Full Big Data Scale Test)</option>
+                                    </select>
+                                </div>
+                                <button type="submit" id="genBtn" class="btn btn-outline-primary">
+                                    <i class="bi bi-gear-fill me-1"></i> Generate Synthetic Dataset
+                                </button>
+                                <span id="genSpinner" class="d-none ms-2 text-primary small">
+                                    <span class="spinner-border spinner-border-sm me-1" role="status"></span> Generating records...
+                                </span>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Datasets List Table Card -->
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title"><i class="bi bi-database-fill text-danger me-2"></i> Ingested Datasets Repository</h3>
+                    <span class="badge bg-light text-dark border" id="datasetsCountBadge">Loading...</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive border-0">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Dataset Name</th>
+                                    <th>File Name</th>
+                                    <th>Records</th>
+                                    <th>Size</th>
+                                    <th>HDFS Target Path</th>
+                                    <th>Status</th>
+                                    <th>Uploaded By</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="datasetsTableBody">
+                                <tr><td colspan="8" class="text-center py-4 text-muted">Loading datasets...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preview Card -->
+            <div class="card d-none" id="previewCard">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle me-2">Schema Preview</span>
+                        <h3 class="card-title d-inline-block fs-5" id="previewTitle">Dataset Preview</h3>
+                    </div>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="document.getElementById('previewCard').classList.add('d-none')">
+                        Close Preview
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div id="previewValidationStatus" class="mb-3"></div>
+                    <div class="table-responsive border">
+                        <table class="table table-sm table-striped align-middle mb-0" id="previewTable">
+                            <thead id="previewTableHead"></thead>
+                            <tbody id="previewTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        loadDatasets();
+    });
+
+    async function loadDatasets() {
+        const res = await api.get('/datasets');
+        const tbody = document.getElementById('datasetsTableBody');
+        if (!tbody) return;
+
+        if (!res || !res.ok || !res.data || res.data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-muted">No datasets available. Upload or generate a new CDR dataset.</td></tr>';
+            return;
+        }
+
+        const list = res.data;
+        document.getElementById('datasetsCountBadge').textContent = `${list.length} Ingested Datasets`;
+
+        tbody.innerHTML = list.map(d => `
+            <tr>
+                <td><strong>${d.name}</strong></td>
+                <td class="font-monospace small text-secondary">${d.fileName}</td>
+                <td><span class="fw-semibold">${(d.recordCount || 0).toLocaleString()}</span></td>
+                <td>${d.fileSizeKb} KB</td>
+                <td class="font-monospace small text-muted">${d.hdfsPath || '/telecom/cdr/input/' + d.fileName}</td>
+                <td><span class="badge ${d.uploadStatus === 'PROCESSED' ? 'bg-success' : 'bg-primary'}">${d.uploadStatus}</span></td>
+                <td>${d.uploadedBy || 'admin'}</td>
+                <td>
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-secondary" onclick="previewDataset(${d.id})" title="Preview Records">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        <button class="btn btn-outline-danger" onclick="deleteDataset(${d.id})" title="Delete Dataset">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    async function handleUploadSubmit(e) {
+        e.preventDefault();
+        const fileInput = document.getElementById('uploadFileInput');
+        const nameInput = document.getElementById('uploadDatasetName');
+        const btn = document.getElementById('uploadBtn');
+
+        if (!fileInput.files || fileInput.files.length === 0) {
+            showToast('Please select a CSV file to upload', 'warning');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+        formData.append('name', nameInput.value.trim());
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Uploading & Ingesting...';
+
+        const res = await api.upload('/datasets/upload', formData);
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-upload me-1"></i> Ingest & Validate CSV';
+
+        if (res && res.ok && res.data) {
+            showToast('Dataset ingested into database and HDFS repository!', 'success');
+            nameInput.value = '';
+            fileInput.value = '';
+            loadDatasets();
+        } else {
+            showToast('Upload failed: ' + ((res && res.data && res.data.error) || 'Server error'), 'error');
+        }
+    }
+
+    async function handleGenerateSubmit(e) {
+        e.preventDefault();
+        const count = parseInt(document.getElementById('genCountSelect').value);
+        const btn = document.getElementById('genBtn');
+        const spinner = document.getElementById('genSpinner');
+
+        btn.disabled = true;
+        spinner.classList.remove('d-none');
+
+        const res = await api.post('/datasets/generate', { count, name: `Synthetic-Indian-CDR-${count}` });
+        btn.disabled = false;
+        spinner.classList.add('d-none');
+
+        if (res && res.ok && res.data && res.data.success) {
+            showToast(res.data.message, 'success');
+            loadDatasets();
+        } else {
+            showToast('Generation failed: ' + ((res && res.data && res.data.error) || 'Engine error'), 'error');
+        }
+    }
+
+    async function previewDataset(id) {
+        const res = await api.get(`/datasets/${id}/preview`);
+        if (!res || !res.ok || !res.data) {
+            showToast('Failed to fetch dataset preview', 'error');
+            return;
+        }
+
+        const p = res.data;
+        const card = document.getElementById('previewCard');
+        card.classList.remove('d-none');
+        document.getElementById('previewTitle').textContent = `Preview: ${p.name} (${p.totalRecords} records)`;
+
+        const statusEl = document.getElementById('previewValidationStatus');
+        if (p.valid) {
+            statusEl.innerHTML = '<div class="alert alert-success py-2 mb-0" style="font-size: 13px;"><i class="bi bi-check-circle-fill me-1"></i> Schema Validated: Columns conform to Indian telecommunication CDR format.</div>';
+        } else {
+            statusEl.innerHTML = `<div class="alert alert-danger py-2 mb-0" style="font-size: 13px;"><i class="bi bi-exclamation-triangle-fill me-1"></i> Validation Warnings: ${p.validationErrors.join(', ')}</div>`;
+        }
+
+        // Render Head
+        document.getElementById('previewTableHead').innerHTML = `<tr>${(p.headers || []).map(h => `<th>${h}</th>`).join('')}</tr>`;
+        // Render Body
+        document.getElementById('previewTableBody').innerHTML = (p.sampleRows || []).map(row => `<tr>${row.map(c => `<td>${c}</td>`).join('')}</tr>`).join('');
+
+        card.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function deleteDataset(id) {
+        if (!confirm('Are you sure you want to remove this dataset from repository?')) return;
+        const res = await api.delete(`/datasets/${id}`);
+        if (res && res.ok) {
+            showToast('Dataset deleted successfully', 'success');
+            loadDatasets();
+        } else {
+            showToast('Failed to delete dataset', 'error');
+        }
+    }
+</script>
+</body>
+</html>

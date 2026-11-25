@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TELECOM – Search Fraud | Mobile Number Investigation</title>
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="app-layout">
+    <!-- Left Navigation Sidebar (Width: 250px, Height: 100vh) -->
+    <aside class="sidebar" id="appSidebar">
+        <!-- 1. TELECOM Logo at Top -->
+        <div class="sidebar-header d-flex align-items-center justify-content-between">
+            <a href="dashboard.html" style="text-decoration: none; display: flex; align-items: center;">
+                <img src="assets/logo.svg" alt="TELECOM" class="sidebar-logo">
+            </a>
+            <button class="btn btn-sm btn-light border d-md-none" onclick="toggleSidebar()" title="Close menu">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <!-- Vertical Navigation Items (Items 2 to 13) -->
+        <div class="sidebar-nav">
+            <div class="nav-section-title">Navigation Menu</div>
+            <a href="dashboard.html" class="nav-item" data-page="dashboard.html">
+                <i class="bi bi-grid-fill"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="search-fraud.html" class="nav-item active" data-page="search-fraud.html">
+                <i class="bi bi-search"></i>
+                <span>Search Fraud</span>
+            </a>
+            <a href="call-records.html" class="nav-item" data-page="call-records.html">
+                <i class="bi bi-telephone-fill"></i>
+                <span>Call Records</span>
+            </a>
+            <a href="fraud-detection.html" class="nav-item" data-page="fraud-detection.html">
+                <i class="bi bi-shield-exclamation"></i>
+                <span>Fraud Detection</span>
+            </a>
+            <a href="ip-threats.html" class="nav-item" data-page="ip-threats.html">
+                <i class="bi bi-hdd-network-fill"></i>
+                <span>IP Threats</span>
+            </a>
+            <a href="geo-analysis.html" class="nav-item" data-page="geo-analysis.html">
+                <i class="bi bi-geo-alt-fill"></i>
+                <span>Geo Analysis</span>
+            </a>
+            <a href="ai-clustering.html" class="nav-item" data-page="ai-clustering.html">
+                <i class="bi bi-diagram-3-fill"></i>
+                <span>AI Clustering</span>
+            </a>
+            <a href="reports.html" class="nav-item" data-page="reports.html">
+                <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                <span>Reports</span>
+            </a>
+            <a href="datasets.html" class="nav-item" data-page="datasets.html">
+                <i class="bi bi-database-fill"></i>
+                <span>Dataset Management</span>
+            </a>
+            <a href="analysis-history.html" class="nav-item" data-page="analysis-history.html">
+                <i class="bi bi-clock-history"></i>
+                <span>Analysis History</span>
+            </a>
+            <a href="user-management.html" class="nav-item" data-page="user-management.html">
+                <i class="bi bi-people-fill"></i>
+                <span>User Management</span>
+            </a>
+            <a href="settings.html" class="nav-item" data-page="settings.html">
+                <i class="bi bi-gear-fill"></i>
+                <span>Settings</span>
+            </a>
+        </div>
+
+        <!-- 14. Logout at Bottom -->
+        <div class="sidebar-footer">
+            <a href="javascript:void(0)" onclick="handleLogout()" class="sidebar-logout-btn">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <div class="main-wrapper">
+        <header class="topbar">
+            <div class="topbar-title">
+                <div>
+                    <h1 class="page-heading">Search Fraud – Mobile Investigation</h1>
+                    <div class="page-subheading">Investigate Indian mobile numbers against Big Data CDR records and MapReduce risk models</div>
+                </div>
+            </div>
+            <div class="topbar-actions">
+                <div class="hadoop-status-pill" id="hadoopStatusPill"></div>
+            </div>
+        </header>
+
+        <main class="content-body">
+            <!-- Search Input Card -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form id="searchForm" onsubmit="handleSearch(event)">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-lg-7">
+                                <label class="form-label">Indian Mobile Number</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-dark fw-bold border-end-0">+91</span>
+                                    <input type="text" class="form-control ps-2" id="mobileInput"
+                                           placeholder="Enter 10-digit Indian number (e.g. 9876543210)"
+                                           maxlength="15" required autofocus>
+                                    <button class="btn btn-primary px-4" type="submit" id="searchBtn">
+                                        <i class="bi bi-search me-1"></i> Investigate Number
+                                    </button>
+                                </div>
+                                <small class="text-muted">Must be 10 digits starting with 6, 7, 8, or 9.</small>
+                            </div>
+                            <div class="col-lg-5">
+                                <label class="form-label text-muted">Quick Test Numbers:</label>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="setAndSearch('9876543210')">
+                                        9876543210 <small class="text-muted">(Wangiri)</small>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="setAndSearch('8765432109')">
+                                        8765432109 <small class="text-muted">(Robocall)</small>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-warning" onclick="setAndSearch('9123456780')">
+                                        9123456780 <small class="text-muted">(Toll Bypass)</small>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-success" onclick="setAndSearch('9845012345')">
+                                        9845012345 <small class="text-muted">(Normal)</small>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div id="searchSpinner" class="text-center py-5 d-none">
+                <div class="spinner-border text-danger" role="status" style="width: 3rem; height: 3rem;"></div>
+                <div class="mt-3 text-secondary fw-semibold">Querying distributed CDR repository & running MapReduce analysis...</div>
+            </div>
+
+            <!-- Not Found State -->
+            <div id="notFoundBox" class="card d-none">
+                <div class="card-body text-center py-5">
+                    <div class="mb-3 text-muted" style="font-size: 48px;">
+                        <i class="bi bi-search"></i>
+                    </div>
+                    <h4 class="fw-bold text-dark" id="notFoundTitle">No records found for this mobile number.</h4>
+                    <p class="text-secondary mb-0" id="notFoundDesc">The entered Indian mobile number does not exist in any processed dataset or CDR partitions.</p>
+                </div>
+            </div>
+
+            <!-- Investigation Results Section -->
+            <div id="resultsSection" class="d-none">
+                <!-- Top Summary Card: Score, Level, Key Stats -->
+                <div class="card mb-4">
+                    <div class="card-header bg-white d-flex align-items-center justify-content-between">
+                        <div>
+                            <span class="text-muted text-uppercase fw-bold" style="font-size: 11px;">Investigated Entity</span>
+                            <h2 class="card-title fs-4" id="resMobileHeading">+91 9876543210</h2>
+                        </div>
+                        <div id="resBadgeContainer">
+                            <span class="badge-high fs-6 px-3 py-2" id="resRiskBadge">HIGH RISK</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-4 align-items-center">
+                            <!-- Score Gauge -->
+                            <div class="col-md-3 text-center border-end">
+                                <div class="text-muted small fw-bold text-uppercase mb-1">Fraud Risk Score</div>
+                                <div class="display-4 fw-bold" id="resRiskScore" style="color: var(--danger);">85</div>
+                                <div class="text-muted" style="font-size: 12px;">out of 100 max score</div>
+                                <div class="risk-meter mt-3 mx-auto" style="width: 80%;">
+                                    <div class="risk-meter-fill risk-fill-high" id="resRiskMeterFill" style="width: 85%;"></div>
+                                </div>
+                            </div>
+
+                            <!-- 10 Display Metrics -->
+                            <div class="col-md-9">
+                                <div class="row g-3 text-center">
+                                    <div class="col-sm-3 col-6 p-2">
+                                        <div class="text-muted small">1. Total Calls</div>
+                                        <div class="fw-bold fs-5" id="resTotalCalls">0</div>
+                                    </div>
+                                    <div class="col-sm-3 col-6 p-2">
+                                        <div class="text-muted small">2. Incoming Calls</div>
+                                        <div class="fw-bold fs-5 text-success" id="resInCalls">0</div>
+                                    </div>
+                                    <div class="col-sm-3 col-6 p-2">
+                                        <div class="text-muted small">3. Outgoing Calls</div>
+                                        <div class="fw-bold fs-5 text-danger" id="resOutCalls">0</div>
+                                    </div>
+                                    <div class="col-sm-3 col-6 p-2">
+                                        <div class="text-muted small">4. Distinct Receivers</div>
+                                        <div class="fw-bold fs-5 text-primary" id="resDistinctReceivers">0</div>
+                                    </div>
+                                    <div class="col-sm-3 col-6 p-2">
+                                        <div class="text-muted small">5. Total Duration</div>
+                                        <div class="fw-bold fs-5" id="resTotalDuration">0s</div>
+                                    </div>
+                                    <div class="col-sm-3 col-6 p-2">
+                                        <div class="text-muted small">6. Avg Duration</div>
+                                        <div class="fw-bold fs-5" id="resAvgDuration">0s</div>
+                                    </div>
+                                    <div class="col-sm-3 col-6 p-2">
+                                        <div class="text-muted small">7. Suspicious Calls</div>
+                                        <div class="fw-bold fs-5 text-danger" id="resSuspiciousCalls">0</div>
+                                    </div>
+                                    <div class="col-sm-3 col-6 p-2">
+                                        <div class="text-muted small">8. Off-Peak Night Calls</div>
+                                        <div class="fw-bold fs-5 text-warning" id="resNightCalls">0</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Triggered Rules & Heuristic Explanations -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="bi bi-shield-check text-danger me-2"></i> Triggered Fraud Detection Rules & Reasons</h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="resReasonsContainer"></div>
+                        <div class="alert alert-light border mt-3 mb-0" style="font-size: 12.5px;">
+                            <i class="bi bi-info-circle text-primary me-1"></i>
+                            <strong>Heuristic Explanation:</strong> TELECOM fraud detection scores identify potentially suspicious telecommunications patterns rather than asserting criminal certainty. Thresholds evaluate call velocity, short-duration ping frequencies (Wangiri), high distinct target entropy, and unusual night ratios.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section: Hourly Frequency & Duration Breakdown -->
+                <div class="row g-4 mb-4">
+                    <div class="col-lg-8">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h3 class="card-title"><i class="bi bi-clock text-danger me-2"></i> 24-Hour Call Frequency Distribution</h3>
+                            </div>
+                            <div class="card-body">
+                                <div style="height: 260px;">
+                                    <canvas id="investigationHourlyChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h3 class="card-title"><i class="bi bi-pie-chart text-danger me-2"></i> Call Type Breakdown</h3>
+                            </div>
+                            <div class="card-body">
+                                <div style="height: 260px;">
+                                    <canvas id="investigationTypeChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Call History Table -->
+                <div class="card">
+                    <div class="card-header d-flex align-items-center justify-content-between">
+                        <h3 class="card-title"><i class="bi bi-list-columns-reverse text-danger me-2"></i> Call Detail History (CDR)</h3>
+                        <span class="badge bg-light text-dark border" id="resCallCountBadge">0 Records</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive border-0">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Record ID</th>
+                                        <th>Target / Contact</th>
+                                        <th>Call Type</th>
+                                        <th>Duration</th>
+                                        <th>Timestamp</th>
+                                        <th>Origin Region</th>
+                                        <th>IP Address</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resHistoryTableBody">
+                                    <tr><td colspan="8" class="text-center py-3">No history</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+<script>
+    let hourlyChart = null;
+    let typeChart = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+        const num = params.get('number');
+        if (num) {
+            document.getElementById('mobileInput').value = num;
+            executeSearch(num);
+        }
+    });
+
+    function setAndSearch(num) {
+        document.getElementById('mobileInput').value = num;
+        executeSearch(num);
+    }
+
+    function handleSearch(event) {
+        event.preventDefault();
+        const num = document.getElementById('mobileInput').value.trim();
+        executeSearch(num);
+    }
+
+    async function executeSearch(number) {
+        const spinner = document.getElementById('searchSpinner');
+        const notFound = document.getElementById('notFoundBox');
+        const results = document.getElementById('resultsSection');
+
+        spinner.classList.remove('d-none');
+        notFound.classList.add('d-none');
+        results.classList.add('d-none');
+
+        const res = await api.get(`/fraud/search/${encodeURIComponent(number)}`);
+        spinner.classList.add('d-none');
+
+        if (!res || !res.ok || !res.data || !res.data.found) {
+            notFound.classList.remove('d-none');
+            const msg = (res && res.data && res.data.message) ? res.data.message : 'No records found for this mobile number.';
+            document.getElementById('notFoundTitle').textContent = msg;
+            return;
+        }
+
+        renderResults(res.data);
+    }
+
+    function renderResults(data) {
+        document.getElementById('resultsSection').classList.remove('d-none');
+
+        document.getElementById('resMobileHeading').textContent = `+91 ${data.mobileNumber}`;
+        document.getElementById('resTotalCalls').textContent = data.totalCalls;
+        document.getElementById('resInCalls').textContent = data.incomingCalls;
+        document.getElementById('resOutCalls').textContent = data.outgoingCalls;
+        document.getElementById('resDistinctReceivers').textContent = data.distinctReceiversCount;
+        document.getElementById('resTotalDuration').textContent = `${data.totalDurationSeconds}s`;
+        document.getElementById('resAvgDuration').textContent = `${data.avgDurationSeconds}s`;
+        document.getElementById('resSuspiciousCalls').textContent = data.suspiciousCallsCount;
+        document.getElementById('resNightCalls').textContent = data.nightCallsCount;
+
+        const scoreEl = document.getElementById('resRiskScore');
+        const badgeEl = document.getElementById('resRiskBadge');
+        const fillEl = document.getElementById('resRiskMeterFill');
+
+        scoreEl.textContent = data.riskScore;
+        fillEl.style.width = `${data.riskScore}%`;
+
+        if (data.riskScore >= 70) {
+            badgeEl.className = 'badge-high fs-6 px-3 py-2';
+            badgeEl.textContent = 'HIGH RISK (70-100)';
+            scoreEl.style.color = 'var(--danger)';
+            fillEl.className = 'risk-meter-fill risk-fill-high';
+        } else if (data.riskScore >= 40) {
+            badgeEl.className = 'badge-medium fs-6 px-3 py-2';
+            badgeEl.textContent = 'MEDIUM RISK (40-69)';
+            scoreEl.style.color = 'var(--warning)';
+            fillEl.className = 'risk-meter-fill risk-fill-medium';
+        } else {
+            badgeEl.className = 'badge-low fs-6 px-3 py-2';
+            badgeEl.textContent = 'LOW RISK (0-39)';
+            scoreEl.style.color = 'var(--success)';
+            fillEl.className = 'risk-meter-fill risk-fill-low';
+        }
+
+        // Triggered Reasons
+        const reasonsContainer = document.getElementById('resReasonsContainer');
+        if (data.alertReasons && data.alertReasons.length > 0) {
+            reasonsContainer.innerHTML = data.alertReasons.map(r => `
+                <div class="d-flex align-items-center gap-2 p-2 mb-2 rounded bg-light border">
+                    <i class="bi bi-exclamation-triangle-fill text-danger fs-5"></i>
+                    <span class="fw-semibold text-dark">${r}</span>
+                </div>
+            `).join('');
+        } else {
+            reasonsContainer.innerHTML = '<div class="text-success"><i class="bi bi-check-circle-fill me-1"></i> Normal Subscriber Activity. No fraud rules triggered.</div>';
+        }
+
+        // Render Charts
+        renderHourlyChart(data.hourlyDistribution);
+        renderTypeChart(data.callTypeDistribution);
+
+        // Render History Table
+        document.getElementById('resCallCountBadge').textContent = `${data.callHistory.length} Records`;
+        const tbody = document.getElementById('resHistoryTableBody');
+        tbody.innerHTML = data.callHistory.map(item => `
+            <tr>
+                <td class="fw-semibold text-secondary">${item.recordId}</td>
+                <td><span class="phone-pill">${item.receiverNumber}</span></td>
+                <td><span class="badge bg-light text-dark border">${item.callType}</span></td>
+                <td class="fw-bold ${item.duration <= 5 ? 'text-danger' : 'text-dark'}">${item.duration}s</td>
+                <td class="text-muted small">${item.timestamp}</td>
+                <td><i class="bi bi-geo-alt text-muted me-1"></i>${item.location}</td>
+                <td class="font-monospace small text-muted">${item.ipAddress}</td>
+                <td>
+                    ${item.isSuspicious ? '<span class="badge bg-danger">Short Ping</span>' : '<span class="badge bg-success-subtle text-success border border-success-subtle">Normal</span>'}
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function renderHourlyChart(hourlyMap) {
+        const ctx = document.getElementById('investigationHourlyChart').getContext('2d');
+        const labels = Object.keys(hourlyMap || {});
+        const data = Object.values(hourlyMap || {});
+
+        if (hourlyChart) hourlyChart.destroy();
+
+        hourlyChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Calls by Hour',
+                    data,
+                    backgroundColor: labels.map(l => (parseInt(l) <= 4) ? '#DC2626' : '#3B82F6'),
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+                    y: { beginAtZero: true, ticks: { precision: 0 } }
+                }
+            }
+        });
+    }
+
+    function renderTypeChart(typeMap) {
+        const ctx = document.getElementById('investigationTypeChart').getContext('2d');
+        const labels = Object.keys(typeMap || {});
+        const data = Object.values(typeMap || {});
+
+        if (typeChart) typeChart.destroy();
+
+        typeChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels,
+                datasets: [{
+                    data,
+                    backgroundColor: ['#E63946', '#16A34A', '#0284C7', '#F59E0B', '#94A3B8']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } }
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

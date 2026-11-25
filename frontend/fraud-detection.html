@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TELECOM – Fraud Detection Engine | Hadoop MapReduce</title>
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="app-layout">
+    <!-- Left Navigation Sidebar (Width: 250px, Height: 100vh) -->
+    <aside class="sidebar" id="appSidebar">
+        <!-- 1. TELECOM Logo at Top -->
+        <div class="sidebar-header d-flex align-items-center justify-content-between">
+            <a href="dashboard.html" style="text-decoration: none; display: flex; align-items: center;">
+                <img src="assets/logo.svg" alt="TELECOM" class="sidebar-logo">
+            </a>
+            <button class="btn btn-sm btn-light border d-md-none" onclick="toggleSidebar()" title="Close menu">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <!-- Vertical Navigation Items (Items 2 to 13) -->
+        <div class="sidebar-nav">
+            <div class="nav-section-title">Navigation Menu</div>
+            <!-- 2. Dashboard -->
+            <a href="dashboard.html" class="nav-item" data-page="dashboard.html">
+                <i class="bi bi-grid-fill"></i>
+                <span>Dashboard</span>
+            </a>
+            <!-- 3. Search Fraud -->
+            <a href="search-fraud.html" class="nav-item" data-page="search-fraud.html">
+                <i class="bi bi-search"></i>
+                <span>Search Fraud</span>
+            </a>
+            <!-- 4. Call Records -->
+            <a href="call-records.html" class="nav-item" data-page="call-records.html">
+                <i class="bi bi-telephone-fill"></i>
+                <span>Call Records</span>
+            </a>
+            <!-- 5. Fraud Detection -->
+            <a href="fraud-detection.html" class="nav-item active" data-page="fraud-detection.html">
+                <i class="bi bi-shield-exclamation"></i>
+                <span>Fraud Detection</span>
+            </a>
+            <!-- 6. IP Threats -->
+            <a href="ip-threats.html" class="nav-item" data-page="ip-threats.html">
+                <i class="bi bi-hdd-network-fill"></i>
+                <span>IP Threats</span>
+            </a>
+            <!-- 7. Geo Analysis -->
+            <a href="geo-analysis.html" class="nav-item" data-page="geo-analysis.html">
+                <i class="bi bi-geo-alt-fill"></i>
+                <span>Geo Analysis</span>
+            </a>
+            <!-- 8. AI Clustering -->
+            <a href="ai-clustering.html" class="nav-item" data-page="ai-clustering.html">
+                <i class="bi bi-diagram-3-fill"></i>
+                <span>AI Clustering</span>
+            </a>
+            <!-- 9. Reports -->
+            <a href="reports.html" class="nav-item" data-page="reports.html">
+                <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                <span>Reports</span>
+            </a>
+            <!-- 10. Dataset Management -->
+            <a href="datasets.html" class="nav-item" data-page="datasets.html">
+                <i class="bi bi-database-fill"></i>
+                <span>Dataset Management</span>
+            </a>
+            <!-- 11. Analysis History -->
+            <a href="analysis-history.html" class="nav-item" data-page="analysis-history.html">
+                <i class="bi bi-clock-history"></i>
+                <span>Analysis History</span>
+            </a>
+            <!-- 12. User Management -->
+            <a href="user-management.html" class="nav-item" data-page="user-management.html">
+                <i class="bi bi-people-fill"></i>
+                <span>User Management</span>
+            </a>
+            <!-- 13. Settings -->
+            <a href="settings.html" class="nav-item" data-page="settings.html">
+                <i class="bi bi-gear-fill"></i>
+                <span>Settings</span>
+            </a>
+        </div>
+
+        <!-- 14. Logout at Bottom -->
+        <div class="sidebar-footer">
+            <a href="javascript:void(0)" onclick="handleLogout()" class="sidebar-logout-btn">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <div class="main-wrapper">
+        <header class="topbar">
+            <div class="topbar-title">
+                <div>
+                    <h1 class="page-heading">Fraud Detection Engine</h1>
+                    <div class="page-subheading">Hadoop MapReduce Distributed Analytics Pipeline</div>
+                </div>
+            </div>
+            <div class="topbar-actions">
+                <div class="hadoop-status-pill" id="hadoopStatusPill"></div>
+            </div>
+        </header>
+
+        <main class="content-body">
+            <!-- Job Controller Action Card -->
+            <div class="card mb-4 border-danger">
+                <div class="card-header bg-white border-bottom d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle me-2">Distributed Pipeline</span>
+                        <h2 class="card-title d-inline-block fs-5">Hadoop MapReduce Job Submission</h2>
+                    </div>
+                    <div>
+                        <span id="pipelineStatusBadge" class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fs-6">IDLE</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="text-secondary mb-4" style="font-size: 14px;">
+                        Triggering this workflow executes the compiled Apache Hadoop MapReduce driver (<code>CDRFraudMapper</code> &amp; <code>CDRFraudReducer</code>).
+                        The distributed mapper partitions records across unique Indian caller MSISDN keys, while the reducer computes calling frequency, distinct receivers, short-duration ping ratios (Wangiri), and persists calculated risk scores directly to MySQL.
+                    </p>
+
+                    <!-- Pipeline Stage Diagram -->
+                    <div class="p-3 mb-4 rounded bg-light border">
+                        <div class="d-flex flex-wrap align-items-center justify-content-between text-center gap-2">
+                            <div class="p-2 flex-fill rounded bg-white border" id="step1">
+                                <small class="text-muted d-block">Stage 1</small>
+                                <strong>Select Dataset</strong>
+                            </div>
+                            <i class="bi bi-arrow-right text-muted"></i>
+                            <div class="p-2 flex-fill rounded bg-white border" id="step2">
+                                <small class="text-muted d-block">Stage 2</small>
+                                <strong>Validate Schema</strong>
+                            </div>
+                            <i class="bi bi-arrow-right text-muted"></i>
+                            <div class="p-2 flex-fill rounded bg-white border" id="step3">
+                                <small class="text-muted d-block">Stage 3</small>
+                                <strong>Execute Mapper</strong>
+                            </div>
+                            <i class="bi bi-arrow-right text-muted"></i>
+                            <div class="p-2 flex-fill rounded bg-white border" id="step4">
+                                <small class="text-muted d-block">Stage 4</small>
+                                <strong>Execute Reducer</strong>
+                            </div>
+                            <i class="bi bi-arrow-right text-muted"></i>
+                            <div class="p-2 flex-fill rounded bg-white border" id="step5">
+                                <small class="text-muted d-block">Stage 5</small>
+                                <strong>Sync to MySQL</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Configuration Form -->
+                    <form id="mrJobForm" onsubmit="handleStartFraudDetection(event)">
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <label class="form-label">Target Dataset</label>
+                                <select class="form-select" id="datasetSelect">
+                                    <option value="Indian-Telecom-CDR-Primary">Indian-Telecom-CDR-Primary (1,000 CDR)</option>
+                                    <option value="Bengaluru-Metro-Synthetic">Bengaluru-Metro-Synthetic (500 CDR)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label" title="Threshold calls before volume alert">Freq. Threshold</label>
+                                <input type="number" class="form-control" id="threshFreq" value="8" min="1" max="100">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label" title="Threshold distinct targets">Distinct Targets</label>
+                                <input type="number" class="form-control" id="threshDistinct" value="6" min="1" max="100">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label" title="Wangiri avg call duration in seconds">Wangiri Max (s)</label>
+                                <input type="number" class="form-control" id="threshWangiri" value="5" min="1" max="30">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label" title="Night call ratio (0.0 to 1.0)">Night Ratio</label>
+                                <input type="number" step="0.05" class="form-control" id="threshNight" value="0.35" min="0.0" max="1.0">
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-3">
+                            <button type="button" id="loadSampleBtn" onclick="handleLoadSampleCDR()" class="btn btn-outline-danger px-4 py-2 fw-semibold" style="font-size: 15px;">
+                                <i class="bi bi-cloud-arrow-down-fill me-1"></i> Load Sample CDR
+                            </button>
+                            <button type="submit" id="startJobBtn" class="btn btn-primary px-4 py-2 fw-semibold" style="font-size: 15px;">
+                                <i class="bi bi-play-fill me-1"></i> Start Fraud Detection
+                            </button>
+                            <span id="jobRunningSpinner" class="d-none text-danger fw-semibold">
+                                <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                                MapReduce Job running in background...
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Real-Time Job Progress & Hadoop Metrics -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-6">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="bi bi-hdd-network text-danger me-2"></i> Hadoop Cluster & HDFS Metrics</h3>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-sm border-0 mb-0">
+                                <tbody>
+                                    <tr>
+                                        <td class="text-muted">Hadoop MapReduce Status:</td>
+                                        <td><span class="badge bg-success" id="hadoopConnBadge">Active Ready</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">HDFS NameNode URL:</td>
+                                        <td class="font-monospace" id="hdfsUrlText">hdfs://localhost:9000</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">HDFS Input Directory:</td>
+                                        <td class="font-monospace">/telecom/cdr/input</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">HDFS Output Directory:</td>
+                                        <td class="font-monospace">/telecom/cdr/output</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Driver Class:</td>
+                                        <td class="font-monospace small">com.telecom.fraud.mapreduce.FraudDetectionDriver</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Mapper Implementation:</td>
+                                        <td class="font-monospace small">com.telecom.fraud.mapreduce.CDRFraudMapper</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Reducer Implementation:</td>
+                                        <td class="font-monospace small">com.telecom.fraud.mapreduce.CDRFraudReducer</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="bi bi-clipboard2-data text-danger me-2"></i> Latest MapReduce Counters</h3>
+                        </div>
+                        <div class="card-body" id="latestJobMetricsBox">
+                            <div class="row g-3 text-center mb-3">
+                                <div class="col-4 p-2 rounded bg-light border">
+                                    <small class="text-muted">Valid Records</small>
+                                    <div class="fw-bold fs-5 text-success" id="cntValid">1,000</div>
+                                </div>
+                                <div class="col-4 p-2 rounded bg-light border">
+                                    <small class="text-muted">Malformed</small>
+                                    <div class="fw-bold fs-5 text-muted" id="cntMalformed">0</div>
+                                </div>
+                                <div class="col-4 p-2 rounded bg-light border">
+                                    <small class="text-muted">Unique Callers</small>
+                                    <div class="fw-bold fs-5 text-primary" id="cntCallers">125</div>
+                                </div>
+                            </div>
+                            <div class="row g-3 text-center">
+                                <div class="col-4 p-2 rounded bg-light border">
+                                    <small class="text-muted">High Risk Detected</small>
+                                    <div class="fw-bold fs-5 text-danger" id="cntHigh">2</div>
+                                </div>
+                                <div class="col-4 p-2 rounded bg-light border">
+                                    <small class="text-muted">Medium Risk</small>
+                                    <div class="fw-bold fs-5 text-warning" id="cntMed">1</div>
+                                </div>
+                                <div class="col-4 p-2 rounded bg-light border">
+                                    <small class="text-muted">Normal Subscribers</small>
+                                    <div class="fw-bold fs-5 text-success" id="cntNormal">122</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Job Execution History Table -->
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title"><i class="bi bi-clock-history text-danger me-2"></i> Recent MapReduce Job Runs</h3>
+                    <a href="analysis-history.html" class="btn btn-sm btn-outline-secondary">View All Runs</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive border-0">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Job ID</th>
+                                    <th>Dataset</th>
+                                    <th>Input Records</th>
+                                    <th>Processed</th>
+                                    <th>Fraud Found</th>
+                                    <th>Duration</th>
+                                    <th>Status</th>
+                                    <th>Start Time</th>
+                                </tr>
+                            </thead>
+                            <tbody id="jobsTableBody">
+                                <tr><td colspan="8" class="text-center py-4 text-muted">Loading job executions...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        loadHadoopDetails();
+        loadRecentJobs();
+    });
+
+    async function loadHadoopDetails() {
+        const res = await api.get('/hadoop/status');
+        if (res && res.ok && res.data) {
+            const h = res.data;
+            document.getElementById('hdfsUrlText').textContent = h.nameNodeUrl || 'hdfs://localhost:9000';
+            const badge = document.getElementById('hadoopConnBadge');
+            if (h.hdfsConnected) {
+                badge.className = 'badge bg-success';
+                badge.textContent = 'HDFS Online';
+            } else {
+                badge.className = 'badge bg-secondary';
+                badge.textContent = 'Standalone MapReduce Engine';
+            }
+        }
+    }
+
+    async function loadRecentJobs() {
+        const res = await api.get('/hadoop/jobs');
+        const tbody = document.getElementById('jobsTableBody');
+        if (!tbody) return;
+
+        if (!res || !res.ok || !res.data || res.data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-muted">No MapReduce jobs recorded yet.</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = res.data.slice(0, 5).map(j => `
+            <tr>
+                <td class="font-monospace fw-bold text-dark">${j.jobId}</td>
+                <td><span class="badge bg-light text-dark border">${j.datasetName}</span></td>
+                <td>${j.inputRecords || 0}</td>
+                <td>${j.processedRecords || 0}</td>
+                <td><span class="fw-bold text-danger">${j.fraudRecords || 0}</span></td>
+                <td>${j.durationSeconds || 0}s</td>
+                <td>
+                    <span class="badge ${j.status === 'COMPLETED' ? 'bg-success' : (j.status === 'RUNNING' ? 'bg-warning text-dark' : 'bg-danger')}">
+                        ${j.status}
+                    </span>
+                </td>
+                <td class="text-muted small">${j.startTime ? j.startTime.replace('T', ' ') : ''}</td>
+            </tr>
+        `).join('');
+    }
+
+    async function handleLoadSampleCDR(force = false) {
+        const btn = document.getElementById('loadSampleBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span> Loading Sample CDR...';
+
+        try {
+            const res = await api.post(`/hadoop/load-sample${force ? '?force=true' : ''}`, { force });
+            if (res && res.data && res.data.alreadyLoaded && !force) {
+                const confirmReload = confirm(
+                    `Sample CDR dataset is already loaded (${res.data.existingRecords.toLocaleString()} records in database).\n\nDo you want to reload and replace existing records?`
+                );
+                if (confirmReload) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="bi bi-cloud-arrow-down-fill me-1"></i> Load Sample CDR';
+                    return handleLoadSampleCDR(true);
+                } else {
+                    showToast(`Retained existing ${res.data.existingRecords.toLocaleString()} sample records in database.`, 'info');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="bi bi-cloud-arrow-down-fill me-1"></i> Load Sample CDR';
+                    return;
+                }
+            }
+
+            if (res && res.ok && res.data && res.data.success) {
+                showToast(`Loaded ${res.data.loadedRecords.toLocaleString()} Indian CDR records into database (${res.data.rejectedRecords} rejected).`, 'success');
+                document.getElementById('step1').style.backgroundColor = '#DCFCE7';
+                document.getElementById('step2').style.backgroundColor = '#DCFCE7';
+                loadHadoopDetails();
+                loadRecentJobs();
+            } else {
+                showToast(res?.data?.error || 'Failed to load sample CDR.', 'error');
+            }
+        } catch (e) {
+            showToast('Error loading sample CDR: ' + e.message, 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-cloud-arrow-down-fill me-1"></i> Load Sample CDR';
+        }
+    }
+
+    async function handleStartFraudDetection(e) {
+        e.preventDefault();
+
+        const btn = document.getElementById('startJobBtn');
+        const spinner = document.getElementById('jobRunningSpinner');
+        const statusBadge = document.getElementById('pipelineStatusBadge');
+
+        btn.disabled = true;
+        spinner.classList.remove('d-none');
+        statusBadge.className = 'badge bg-warning text-dark px-3 py-2 fs-6';
+        statusBadge.textContent = 'RUNNING';
+
+        // Animate stages
+        const steps = ['step1', 'step2', 'step3', 'step4', 'step5'];
+        steps.forEach(s => document.getElementById(s).style.backgroundColor = '#FFFFFF');
+
+        let stepIdx = 0;
+        const interval = setInterval(() => {
+            if (stepIdx < steps.length) {
+                document.getElementById(steps[stepIdx]).style.backgroundColor = '#FFEBEE';
+                stepIdx++;
+            }
+        }, 300);
+
+        const datasetName = document.getElementById('datasetSelect').value;
+        const frequencyThreshold = parseInt(document.getElementById('threshFreq').value);
+        const distinctReceiversThreshold = parseInt(document.getElementById('threshDistinct').value);
+        const wangiriDurationThreshold = parseInt(document.getElementById('threshWangiri').value);
+        const nightRatioThreshold = parseFloat(document.getElementById('threshNight').value);
+
+        const res = await api.post('/hadoop/start', {
+            datasetName,
+            frequencyThreshold,
+            distinctReceiversThreshold,
+            wangiriDurationThreshold,
+            nightRatioThreshold
+        });
+
+        clearInterval(interval);
+        steps.forEach(s => document.getElementById(s).style.backgroundColor = '#DCFCE7');
+
+        btn.disabled = false;
+        spinner.classList.add('d-none');
+
+        if (res && res.ok && res.data) {
+            const j = res.data;
+            statusBadge.className = 'badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fs-6';
+            statusBadge.textContent = 'COMPLETED';
+
+            showToast(`Hadoop MapReduce Job ${j.jobId} finished successfully! Found ${j.fraudRecords} suspicious entities.`, 'success');
+
+            if (j.counters) {
+                document.getElementById('cntValid').textContent = (j.counters.ValidRecordsProcessed || 1000).toLocaleString();
+                document.getElementById('cntMalformed').textContent = (j.counters.MalformedRecords || 0).toLocaleString();
+                document.getElementById('cntCallers').textContent = (j.counters.TotalUniqueCallers || 125).toLocaleString();
+                document.getElementById('cntHigh').textContent = (j.counters.HighRiskDetected || 2).toLocaleString();
+                document.getElementById('cntMed').textContent = (j.counters.MediumRiskDetected || 1).toLocaleString();
+                document.getElementById('cntNormal').textContent = (j.counters.NormalSubscribers || 122).toLocaleString();
+            }
+
+            loadRecentJobs();
+        } else {
+            statusBadge.className = 'badge bg-danger px-3 py-2 fs-6';
+            statusBadge.textContent = 'FAILED';
+            showToast('MapReduce job failed: ' + ((res && res.data && res.data.error) || 'Processing error'), 'error');
+        }
+    }
+</script>
+</body>
+</html>

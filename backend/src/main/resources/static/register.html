@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TELECOM – Register | Telecommunication Fraud Detection System Using Hadoop MapReduce</title>
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-page">
+
+    <div class="auth-card" style="max-width: 520px;">
+        <div class="auth-header">
+            <img src="assets/logo.svg" alt="TELECOM" style="height: 48px;">
+            <h1 class="auth-title">Create Account</h1>
+            <p class="auth-subtitle">Register new investigator profile for TELECOM platform</p>
+        </div>
+
+        <div id="regAlert" class="alert alert-danger d-none" role="alert" style="font-size: 13.5px;"></div>
+        <div id="regSuccess" class="alert alert-success d-none" role="alert" style="font-size: 13.5px;"></div>
+
+        <form id="registerForm" onsubmit="handleRegisterSubmit(event)">
+            <div class="mb-3">
+                <label for="fullName" class="form-label">Full Name</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-person-badge"></i></span>
+                    <input type="text" class="form-control border-start-0 ps-0" id="fullName" placeholder="e.g. Rajesh Kumar" required autofocus>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-person"></i></span>
+                        <input type="text" class="form-control border-start-0 ps-0" id="username" placeholder="Choose username" required minlength="3">
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="email" class="form-label">Email Address</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-envelope"></i></span>
+                        <input type="email" class="form-control border-start-0 ps-0" id="email" placeholder="name@telecom.in" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-lock"></i></span>
+                        <input type="password" class="form-control border-start-0 ps-0" id="password" placeholder="At least 6 chars" required minlength="6">
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-shield-check"></i></span>
+                        <input type="password" class="form-control border-start-0 ps-0" id="confirmPassword" placeholder="Confirm password" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                    <label class="form-check-label text-secondary" for="termsCheck" style="font-size: 13px;">
+                        I agree to the Big Data fraud monitoring & telecom usage guidelines.
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" id="regBtn" class="btn btn-primary w-100 py-2" style="font-size: 15px;">
+                <span id="regBtnSpinner" class="spinner-border spinner-border-sm me-2 d-none" role="status"></span>
+                Complete Registration
+            </button>
+        </form>
+
+        <div class="text-center mt-4">
+            <span class="text-secondary" style="font-size: 13.5px;">Already have an account? </span>
+            <a href="login.html" style="color: var(--brand-primary); font-weight: 600; text-decoration: none; font-size: 13.5px;">Sign In</a>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        async function handleRegisterSubmit(event) {
+            event.preventDefault();
+            const alertBox = document.getElementById('regAlert');
+            const successBox = document.getElementById('regSuccess');
+            const btn = document.getElementById('regBtn');
+            const spinner = document.getElementById('regBtnSpinner');
+
+            alertBox.classList.add('d-none');
+            successBox.classList.add('d-none');
+
+            const fullName = document.getElementById('fullName').value.trim();
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                alertBox.textContent = 'Passwords do not match. Please re-enter.';
+                alertBox.classList.remove('d-none');
+                return;
+            }
+
+            btn.disabled = true;
+            spinner.classList.remove('d-none');
+
+            const res = await api.post('/auth/register', {
+                fullName,
+                username,
+                email,
+                password,
+                confirmPassword,
+                role: 'USER'
+            });
+
+            btn.disabled = false;
+            spinner.classList.add('d-none');
+
+            if (res && res.ok && res.data && res.data.success) {
+                api.setToken(res.data.token);
+                api.setUser(res.data.user);
+
+                successBox.textContent = 'Account registered successfully! Redirecting to dashboard...';
+                successBox.classList.remove('d-none');
+
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 800);
+            } else {
+                const err = (res && res.data && res.data.message) || (res && res.data && res.data.error) || 'Registration failed. Please try again.';
+                alertBox.textContent = err;
+                alertBox.classList.remove('d-none');
+            }
+        }
+    </script>
+</body>
+</html>

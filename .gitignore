@@ -1,0 +1,33 @@
+# Maven build outputs
+target/
+**/target/
+*.class
+*.jar
+*.war
+*.ear
+
+# Database and runtime data
+data/
+*.mv.db
+*.trace.db
+
+# Hadoop temporary runtime output
+hadoop-work/
+/hadoop-work/
+
+# Logs
+*.log
+logs/
+
+# IDE / Editor configuration
+.idea/
+*.iml
+.vscode/
+.project
+.classpath
+.settings/
+
+# OS metadata
+Thumbs.db
+Desktop.ini
+.DS_Store
